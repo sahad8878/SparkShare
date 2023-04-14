@@ -10,7 +10,7 @@ import Button from "./Button";
 function Table() {
   const dispatch = useDispatch();
   const data = useSelector((store) => store.ideas);
-
+console.log(data,"dataaaa");
   const handleRemoveIdea = (id) => {
 
     Modal.confirm({
@@ -101,6 +101,7 @@ function Table() {
           <Button>Share your Ideas</Button>
         </Link>
       </div>
+      {data.length !== 0 ?
       <div className="flex justify-center content-center my-14 ">
         <table className="border-2" {...getTableProps()}>
           <thead className="bg-gray-100 border-2 border-gray-200 ">
@@ -139,6 +140,12 @@ function Table() {
           </tbody>
         </table>
       </div>
+      :
+      <div className=" text-center">
+
+        <h1 className="text-lg font-sans font-normal mt-9 ">No Business Ideas Exist...! share your ideas</h1>
+      </div>
+      }
     </div>
   );
 }

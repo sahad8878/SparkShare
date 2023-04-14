@@ -3,7 +3,7 @@ import React from "react";
 function Button({ onClick, children }) {
   return (
     <button
-      className="bg-indigo-600 text-white py-2 px-6 my-10 rounded hover:bg-indigo-700"
+      className="bg-[#6d6875] text-white font-bold py-1 px-3 my-3 rounded hover:bg-[#8f8998]"
       onClick={onClick}
     >
       {children}

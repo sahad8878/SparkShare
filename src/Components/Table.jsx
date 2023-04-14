@@ -1,45 +1,72 @@
 import React from "react";
 import { useTable } from "react-table";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { message,Modal} from "antd";
+
+import { deleteIdea } from "../Store/ideaSlice";
 import Button from "./Button";
 
 function Table() {
+  const dispatch = useDispatch();
+  const data = useSelector((store) => store.ideas);
+
+  const handleRemoveIdea = (id) => {
+
+    Modal.confirm({
+      title: 'Are you sure you want to delete this ?',
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk() {
+      
+        dispatch(deleteIdea({ id: id }));
+        message.success("Successfully deleted")
+      },
+      onCancel() {},
+    });
+  };
+
   const columns = React.useMemo(
     () => [
+      {
+        Header: "Date",
+        accessor: "date",
+      },
       {
         Header: "Name",
         accessor: "name",
       },
       {
         Header: "Ideas",
-        accessor: "ideas",
+        accessor: "idea",
       },
       {
         Header: "Actions",
         accessor: "actions",
         Cell: ({ row }) => (
           <div className=" flex gap-5">
+            <Link to={`edit-idea/${row.original.id}`}>
+              <button className=" text-green-700 hover:text-green-900">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
+                  />
+                </svg>
+              </button>
+            </Link>
             <button
-              className=" text-green-700"
-              // onClick={() => props.onEdit(row.original)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"
-                />
-              </svg>
-            </button>
-            <button
-              className="text-red-600"
-              //  onClick={() => props.onDelete(row.original.ideas)}
+              className="text-red-600 hover:text-red-800"
+              onClick={() => handleRemoveIdea(row.original.id)}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -60,76 +87,59 @@ function Table() {
         ),
       },
     ],
-    [
-      // props.onDelete, props.onEdit
-    ]
+    []
   );
-
-  const data = [
-    {
-      id: "1",
-      name: "sahad",
-      ideas: "car wash",
-    },
-    {
-      id: "2",
-      name: "muhammed",
-      ideas: "chicken",
-    },
-  ];
-  //  React.useMemo(() => props.data, [props.data]);
-
   const tableInstance = useTable({ columns, data });
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
 
   return (
-    
-      <div >
-   <div className="flex justify-center">
-
-      <Button>Add your Ideas</Button>
-   </div>
-    <div className="flex justify-center content-center mt-24">
-      <table className="border-2" {...getTableProps()}>
-        <thead className="bg-gray-50 border-2 border-gray-200 ">
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th
-                  className="p-3 text-sm border-2 font-semibold tracking-wide text-left"
-                  {...column.getHeaderProps()}
-                >
-                  {column.render("Header")}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody
-          className=" bg-white divide-y  divide-gray-200"
-          {...getTableBodyProps()}
-          >
-          {rows.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td
-                    className="p-3 text-sm text-gray-700 border-2 whitespace-nowrap"
-                    {...cell.getCellProps()}
-                    >
-                    {cell.render("Cell")}
-                  </td>
+    <div>
+      <div className="flex justify-center">
+        <Link to="/add-ideas">
+          <Button>Share your Ideas</Button>
+        </Link>
+      </div>
+      <div className="flex justify-center content-center my-14 ">
+        <table className="border-2" {...getTableProps()}>
+          <thead className="bg-gray-100 border-2 border-gray-200 ">
+            {headerGroups.map((headerGroup) => (
+              <tr {...headerGroup.getHeaderGroupProps()}>
+                {headerGroup.headers.map((column) => (
+                  <th 
+                    className="p-3 px-9 text-sm border-2 font-semibold tracking-wide text-left"
+                    {...column.getHeaderProps()}
+                  >
+                    {column.render("Header")}
+                  </th>
                 ))}
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            ))}
+          </thead>
+          <tbody
+            className=" bg-white divide-y  divide-gray-200"
+            {...getTableBodyProps()}
+          >
+            {rows.map((row) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <td
+                      className="p-3 px-6 text-sm text-slate-900 border-2 whitespace-nowrap"
+                      {...cell.getCellProps()}
+                    >
+                      {cell.render("Cell")}
+                    </td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
-          </div>
   );
 }
 

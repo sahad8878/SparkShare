@@ -1,56 +1,61 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
+import { useNavigate, useParams, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { message } from "antd";
-import { addIdea } from "../Store/ideaSlice";
+
 import Button from "./Button";
-function Form() {
+import { editIdea } from "../Store/ideaSlice";
+
+function EditForm() {
+  const params = useParams();
   const dispatch = useDispatch();
+  const data = useSelector((store) => store.ideas);
   const navigate = useNavigate();
+  const existingIdea = data.filter((idea) => idea.id === params.id);
+  const { name, idea } = existingIdea[0];
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => {
-    const currentData = new Date();
 
+  const onSubmit = (data) => {
     dispatch(
-      addIdea({
-        id: uuidv4(),
-        date: currentData.toLocaleDateString(),
+      editIdea({
+        id: params.id,
         name: data.name,
         idea: data.idea,
       })
-    );
-    navigate("/");
-    message.success("Idea successfully submitted");
+    ),
+      navigate("/");
+    message.success(" Successfully Updated");
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="flex justify-center text-left  content-center ">
+      <div className="flex justify-center text-left content-center mb-4 ">
         <div className="flex flex-col gap-1 ">
-          <label htmlFor="name" className="font-medium">
+          <label htmlFor="name" className="font-medium ">
             Enter your Name
           </label>
           <input
             type="text"
             id="name"
+            defaultValue={name}
             name="name"
             className="w-60"
             {...register("name", { required: true })}
           />
           {errors.name && (
-            <p className="errorMsg text-red-500">Please check the Name</p>
+            <p className="errorMsg text-red-600">Please check the Name</p>
           )}
           <label htmlFor="idea" className="font-medium mt-5">
-            Enter Your Ideas
+            Share Your Ideas
           </label>
           <textarea
+            defaultValue={idea}
             id="idea"
-            name="idea "
+            name="idea"
             {...register("idea", { required: true })}
           />
           {errors.idea && (
@@ -58,7 +63,7 @@ function Form() {
           )}
 
           <div className="flex justify-between">
-            <Button>submint</Button>
+            <Button>Update</Button>
             <div>
               <Link to="/">
                 <Button>Back</Button>
@@ -71,4 +76,4 @@ function Form() {
   );
 }
 
-export default Form;
+export default EditForm;

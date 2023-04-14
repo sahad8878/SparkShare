@@ -1,0 +1,93 @@
+import React from "react";
+import { useTable } from 'react-table';
+function Table() {
+
+    const columns = React.useMemo(
+        () => [
+          {
+            Header: 'Name',
+            accessor: 'name',
+          },
+          {
+            Header: 'Email',
+            accessor: 'email',
+          },
+        ],
+        []
+      );
+    const tableData = [
+       "sahad",
+       "sahad@gadga"
+    ]
+      const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+        columns,
+        data: tableData,
+      });
+
+
+  return (
+
+    <>
+     <table {...getTableProps()}>
+      <thead>
+        {headerGroups.map((headerGroup) => (
+          <tr {...headerGroup.getHeaderGroupProps()}>
+            {headerGroup.headers.map((column) => (
+              <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+            ))}
+          </tr>
+        ))}
+      </thead>
+      <tbody {...getTableBodyProps()}>
+        {rows.map((row) => {
+          prepareRow(row);
+          return (
+            <tr {...row.getRowProps()}>
+              {row.cells.map((cell) => (
+                <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+              ))}
+              </tr>
+          );
+        })}
+      </tbody>
+    </table>
+    
+    </>
+    // <div className=" flex justify-center content-center mt-24">
+    //   <table className="border-2">
+    //     <thead className="bg-gray-50 border-2 border-gray-200 ">
+    //       <tr >
+    //       <th className="p-3 text-sm border-2 font-semibold tracking-wide text-left">data</th>
+
+    //         <th className="p-3 text-sm border-2 font-semibold tracking-wide text-left">name</th>
+    //         <th className="p-3 text-sm font-semibold tracking-wide text-left">Ideas</th>
+    //         <th className="p-3 text-sm font-semibold tracking-wide text-left"></th>
+    //         <th className="p-3 text-sm  font-semibold tracking-wide text-left"></th>
+
+    //       </tr>
+    //     </thead>
+    //     <tbody className=" bg-white divide-y  divide-gray-200">
+    //         <tr>
+    //         <td className="p-3 text-sm text-gray-700 border-2 whitespace-nowrap">
+    //                 1/8/8
+    //             </td >
+    //             <td className="p-3 text-sm text-gray-700 border-2 whitespace-nowrap">
+    //                 name
+    //             </td >
+    //             <td className="p-3 text-sm text-gray-700 border-2 whitespace-nowrap">
+    //                 idadsasdfasfdsaddhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+    //             </td>
+    //             <td className="p-3 text-sm text-gray-700 border-2 whitespace-nowrap">
+    //                delete
+    //             </td><td className="p-3 text-sm text-gray-700 border-2 whitespace-nowrap">
+    //                 edit
+    //             </td>
+    //         </tr>
+    //     </tbody>
+    //   </table>
+    // </div>
+  
+  );
+}
+
+export default Table;
